@@ -1,0 +1,50 @@
+version: "3.1"
+
+stories:
+  - story: Greet and Ask How to Help
+    steps:
+      - intent: greet
+      - action: utter_ask_how_may_i_help
+
+  - story: Ask Symptoms and accept doctor assistence
+    steps:
+      - intent: ask_symptoms
+      - action: utter_recommend_seeing_doctor
+      - intent: affirm
+      - action: action_provide_doctor_options
+
+  - story: Ask Symptoms and decline doctor assistence
+    steps:
+      - intent: ask_symptoms
+      - action: utter_recommend_seeing_doctor
+      - intent: deny
+      - action: utter_medical_recommend
+      - action: utter_goodbye
+
+  - story: Request Emergency Numbers
+    steps:
+      - intent: request_emergency_numbers
+      - action: utter_request_emergency_numbers
+
+  - story: Book an Appointment - Select Doctor
+    steps:
+      - intent: book_slot
+      - action: utter_book_slot
+      - intent: select_doctor
+      - action: action_provide_time_slots
+      - slot_was_set:
+        - time: "10:00 AM"
+      - action: action_book_slot
+
+  - story: Select Doctor and Show Time Slots
+    steps:
+      - action: action_provide_doctor_options
+      - intent: select_doctor
+      - slot_was_set:
+        - doctor: "Dr. Smith"
+      - action: action_provide_time_slots
+      - intent: select_time_slot
+      - slot_was_set:
+        - time: "10:00 AM"
+      - action: action_book_slot
+

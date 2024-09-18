@@ -1,0 +1,92 @@
+version: "3.1"
+
+nlu:
+  - intent: greet
+    examples: |
+      - Hello
+      - Hi
+      - Hey there
+      - Good morning
+      - Good evening
+
+  - intent: ask_symptoms
+    examples: |
+      - I am feeling [unwell](symptoms)
+      - I have a [headache](symptoms)
+      - My [stomach hurts](symptoms)
+      - I have a [cough](symptoms)
+      - I'm experiencing [fever](symptoms)
+      - i am not feeling [good](symptoms)
+
+  - lookup: symptoms
+    examples: |
+      - unwell
+      - headache
+      - stomach hurts
+      - cough
+      - fever
+      - good
+
+
+
+  - intent: request_emergency_numbers
+    examples: |
+      - What are the emergency numbers?
+      - I need emergency contact numbers
+      - Can you give me emergency numbers?
+      - Tell me the emergency services contact
+      - What should I call in an emergency?
+
+  - intent: book_slot
+    examples: |
+      - I want to book an appointment
+      - Can I schedule a visit?
+      - Book a slot for me
+      - I need to make an appointment
+      - Set up a time for me
+
+  - intent: select_doctor
+    examples: |
+      - I want to see [Dr. Smith](doctor)
+      - I choose [Dr. Johnson](doctor)
+      - Book an appointment with [Dr. Lee](doctor)
+      - I would like to see [Dr. Smith](doctor)
+      - [Dr. Johnson](doctor)
+      - [dr.jhon](doctor)
+
+  - lookup: doctor
+    examples: |
+      - Dr. Smith
+      - Dr. Johnson
+      - Dr. Lee
+      - Dr. Smith
+      - Dr. Johnson
+      - dr. Raj
+
+  - intent: select_time_slot
+    examples: |
+      - I choose 10:00 AM
+      - Book the 11:00 AM slot
+      - I want the 01:00 PM appointment
+      - I'll take the 03:00 PM slot
+      - 11:00 AM works for me
+
+  - intent: affirm
+    examples: |
+      - yes
+      - yeah
+      - sure
+      - absolutely
+      - of course
+      - definitely
+      - ok
+
+  - intent: deny
+    examples: |
+      - no
+      - nope
+      - not really
+      - nah
+      - never
+      - I don't think so
+      - no way

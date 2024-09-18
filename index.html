@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="chat-container">
+        <div class="chat-button" id="chatButton">💬</div>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">Chatbot</div>
+            <div class="chat-messages" id="chatMessages"></div>
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="Type a message...">
+                <button id="sendButton">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const chatButton = document.getElementById('chatButton');
+        const chatBox = document.getElementById('chatBox');
+        const sendButton = document.getElementById('sendButton');
+        const userInput = document.getElementById('userInput');
+        const chatMessages = document.getElementById('chatMessages');
+
+        chatButton.addEventListener('click', () => {
+            chatBox.style.display = chatBox.style.display === 'none' || chatBox.style.display === '' ? 'flex' : 'none';
+        });
+
+        sendButton.addEventListener('click', async () => {
+            const message = userInput.value;
+            if (message.trim() !== '') {
+                addMessageToChat("User", message);
+                userInput.value = '';
+
+                // Send the user message to Rasa and get the response
+                try {
+                    const response = await fetch('http://localhost:5005/webhooks/rest/webhook', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ sender: 'user', message: message })
+                    });
+
+                    const data = await response.json();
+                    data.forEach(msg => {
+                        if (msg.text) {
+                            addMessageToChat("Bot", msg.text);
+                        }
+                        if (msg.buttons) {
+                            addButtonsToChat(msg.buttons);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error sending message to Rasa:', error);
+                }
+            }
+        });
+
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendButton.click();
+            }
+        });
+
+        function addMessageToChat(sender, message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.textContent = `${sender}: ${message}`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addButtonsToChat(buttons) {
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'button-container';
+
+            buttons.forEach(button => {
+                const buttonElement = document.createElement('button');
+                buttonElement.textContent = button.title;
+                buttonElement.addEventListener('click', () => {
+                    handleButtonClick(button.payload);
+                });
+                buttonContainer.appendChild(buttonElement);
+            });
+
+            chatMessages.appendChild(buttonContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function handleButtonClick(payload) {
+            // Send the selected payload to Rasa and get the response
+            fetch('http://localhost:5005/webhooks/rest/webhook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ sender: 'user', message: payload })
+            })
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(msg => {
+                    if (msg.text) {
+                        addMessageToChat("Bot", msg.text);
+                    }
+                    if (msg.buttons) {
+                        addButtonsToChat(msg.buttons);
+                    }
+                });
+            })
+            .catch(error => console.error('Error handling button click:', error));
+        }
+    </script>
+    
+</body>
+</html>

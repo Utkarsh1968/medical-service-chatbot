@@ -1,0 +1,71 @@
+version: "3.1"
+
+intents:
+  - greet
+  - ask_symptoms
+  - request_emergency_numbers
+  - book_slot
+  - ask_how_may_i_help
+  - select_doctor
+  - select_time_slot
+  - affirm
+  - deny
+
+entities:
+  - symptoms
+  - doctor
+  - time
+
+slots:
+  doctor:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: doctor
+        intent: select_doctor
+
+  time:
+    type: text
+    influence_conversation: true
+    mappings:
+      - type: from_entity
+        entity: time
+        intent: select_time_slot
+
+responses:
+  utter_greet:
+    - text: "Hello! How can I assist you with your medical concerns today?"
+
+  utter_recommend_seeing_doctor:
+    - text: "Based on the symptoms you provided, would you like to see a doctor."
+
+
+  utter_request_emergency_numbers:
+    - text: "Here are some emergency numbers you might need: 101 (Emergency Services), 123 (Health Services)."
+
+  utter_book_slot:
+    - text: "Which doctor would you like to see?"
+
+  utter_provide_doctor_options:
+    - text: "Here are the doctors available: Dr. Smith, Dr. Johnson, Dr. Lee. Please select one."
+
+  utter_provide_time_slots:
+    - text: "Here are the available time slots for Dr. {doctor}:\n1. 10:00 AM\n2. 11:00 AM\n3. 01:00 PM\n4. 03:00 PM\nPlease choose a time slot by clicking on it."
+
+  utter_ask_how_may_i_help:
+    - text: "How may I help you today? You can ask about symptoms, emergency numbers, or book a slot."
+
+  utter_medical_recommend:
+    - text: "Ok, you can take a medicine recommendation on our website page!"
+
+  utter_goodbye:
+    - text: "Thank you, feel free to ask any assistence!"
+
+actions:
+  
+  - action_provide_emergency_numbers
+  - action_book_slot
+  - action_provide_doctor_options
+  - action_provide_time_slots
+

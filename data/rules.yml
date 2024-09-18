@@ -1,0 +1,14 @@
+version: "3.1"
+
+rules:
+  - rule: respond to 'emergency'
+    steps:
+      - intent: request_emergency_numbers
+      - action: utter_request_emergency_numbers
+
+  - rule: respond to 'appointment' or 'book'
+    steps:
+      - intent: book_slot
+      - action: utter_book_slot
+
+
